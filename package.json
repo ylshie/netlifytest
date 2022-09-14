@@ -8,7 +8,7 @@
     "init": "npm run clean-dist && npm run copy-assets",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm run copy-assets && npx parcel index.html",
-    "build": "npm run init && npx parcel build"
+    "build": "npm run init && npx parcel build index.html"
   },
   "author": "KuoYeh",
   "license": "ISC",
