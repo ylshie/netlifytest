@@ -1,0 +1,26 @@
+{
+  "name": "metawavebodyar",
+  "version": "1.0.0",
+  "description": "MetaWave Body AR",
+  "main": "index.js",
+  "scripts": {
+    "clean-dist": "rm -rf dist && mkdir dist",
+    "copy-assets": "cp -r ./assets dist",
+    "init": "npm run clean-dist && npm run copy-assets",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npm run copy-assets && npx parcel index.html",
+    "build": "npm run init && npx parcel build"
+  },
+  "author": "KuoYeh",
+  "license": "ISC",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.3",
+    "sass": "^1.54.9"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1",
+    "mind-ar": "^1.1.5",
+    "parcel": "^1.12.4",
+    "three": "^0.144.0"
+  }
+}

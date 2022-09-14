@@ -1,0 +1,131 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./libs/three.js-r132/build/three.js"></script>
+    
+    <!--     GLTF Loader for Three.js -->
+    <script src="https://unpkg.com/three@0.133.0/examples/js/loaders/GLTFLoader.js"></script>
+    <!--     Orbit Controls for Three.js -->
+    <script src="https://unpkg.com/three@0.133.0/examples/js/controls/OrbitControls.js"></script>
+    <!--     VRM Loader for Three.js -->
+    <script src="https://unpkg.com/@pixiv/three-vrm@0.6.7/lib/three-vrm.js"></script>
+    
+
+    <!--<script src="./libs/three.js-r132/examples/jsm/renderers/CSS3DRenderer.js" type="module"></script>-->
+    <!--<script src="./libs/CSS3DRenderer.js" type="module"></script>-->
+    <script src="./libs/mindar/mindar-image-three.no3.js"></script>
+    <script src="./main210.js" type="module"></script>
+    <script src="./animator.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="./camera_utils.js" crossorigin="anonymous"></script> 
+    <script src="./holistic.js" crossorigin="anonymous"></script>
+    <script>
+      //import {animateVRM} from "./animator.js"
+      var mytext = null;
+      function create_camera(videoElement) {
+          const camera = new Camera(videoElement, {
+              onFrame: async () => {
+                  //console.log("got image");
+                  
+                  await holistic.send({ image: videoElement });
+              },
+              width: 640,
+              height: 480,
+          });
+          camera.start();
+      }
+      function hook_video() {
+        setTimeout(function(){
+          let videoElement = document.querySelector("video");
+
+          if (videoElement) {
+            create_camera(videoElement)
+          } else {
+            hook_video();
+          }
+        }, 1000)
+      }
+      hook_video()
+
+      const onResults = (results) => {
+         // console.log("onResult")
+        // Draw landmark guides
+        drawResults(results);
+        // Animate model
+        //animateVRM(currentVrm, results);
+        //XXXX();
+        animateVRM(results, results);
+      };
+      const holistic = new Holistic({
+          locateFile: (file) => {
+              return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5.1635989137/${file}`;
+          },
+      });
+
+      holistic.setOptions({
+          modelComplexity: 1,
+          smoothLandmarks: true,
+          minDetectionConfidence: 0.7,
+          minTrackingConfidence: 0.7,
+          refineFaceLandmarks: true,
+      });
+      // Pass holistic a callback function
+      holistic.onResults(onResults);
+
+      const drawResults = (results) => {
+        let videoElement = document.querySelector("video");
+        let canvasElement = document.querySelector('.output_canvas');
+        let canvasCtx = canvasElement.getContext('2d');
+
+        canvasElement.style.width = videoElement.style.width;
+        canvasElement.style.height = videoElement.style.height;
+
+        canvasCtx.save();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        //canvasCtx.drawImage(results.segmentationMask, 0, 0,
+        //                    canvasElement.width, canvasElement.height);
+
+        // Only overwrite existing pixels.
+        canvasCtx.globalCompositeOperation = 'source-in';
+        canvasCtx.fillStyle = '#00FF00';
+        canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+
+        // Only overwrite missing pixels.
+        canvasCtx.globalCompositeOperation = 'destination-atop';
+        canvasCtx.drawImage(
+            results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+        canvasCtx.globalCompositeOperation = 'source-over';
+          drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS,
+                        {color: '#00FF00', lineWidth: 4});
+          drawLandmarks(canvasCtx, results.poseLandmarks,
+                        {color: '#FF0000', lineWidth: 2});
+          drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_TESSELATION,
+                        {color: '#C0C0C070', lineWidth: 1});
+          drawConnectors(canvasCtx, results.leftHandLandmarks, HAND_CONNECTIONS,
+                        {color: '#CC0000', lineWidth: 5});
+          drawLandmarks(canvasCtx, results.leftHandLandmarks,
+                        {color: '#00FF00', lineWidth: 2});
+          drawConnectors(canvasCtx, results.rightHandLandmarks, HAND_CONNECTIONS,
+                        {color: '#00CC00', lineWidth: 5});
+          drawLandmarks(canvasCtx, results.rightHandLandmarks,
+                        {color: '#FF0000', lineWidth: 2});
+        canvasCtx.restore();
+      };
+    </script>
+    <style>
+      html, body {position: relative; margin: 0; width: 100%; height: 100%; overflow: hidden}
+    </style>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <a class="abs logo" href="https://metawave.click" target="_blank">
+      <div style="display: flex;align-items: center;bottom: 0;right: 10px;">
+        <img class="logo" src="logo.png" alt="" style="
+          height: 50px;">
+        <span class="title">MetaWave AI Lab</span>
+      </div>
+    </a>
+    <canvas class="output_canvas" width="1280px" height="720px"></canvas>
+  </body>
+</html>
