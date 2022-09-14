@@ -1,7 +1,9 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="./libs/three.js-r132/build/three.js"></script>
+    <!--<script src="./libs/three.js-r132/build/three.js"> -->
+    <script src="https://unpkg.com/three@0.133.0/build/three.js"></script>
+    </script>
     
     <!--     GLTF Loader for Three.js -->
     <script src="https://unpkg.com/three@0.133.0/examples/js/loaders/GLTFLoader.js"></script>
@@ -13,12 +15,17 @@
 
     <!--<script src="./libs/three.js-r132/examples/jsm/renderers/CSS3DRenderer.js" type="module"></script>-->
     <!--<script src="./libs/CSS3DRenderer.js" type="module"></script>-->
-    <script src="./libs/mindar/mindar-image-three.no3.js"></script>
+    <!--<script src="./libs/mindar/mindar-image-three.prod.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.5/dist/mindar-image-three.prod.js"></script>
     <script src="./main210.js" type="module"></script>
     <script src="./animator.js" type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5.1635989137/holistic.js" crossorigin="anonymous"></script>
+    <!--
     <script src="./camera_utils.js" crossorigin="anonymous"></script> 
     <script src="./holistic.js" crossorigin="anonymous"></script>
+    -->
     <script>
       //import {animateVRM} from "./animator.js"
       var mytext = null;
