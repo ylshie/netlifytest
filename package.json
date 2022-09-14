@@ -2,10 +2,9 @@
   "name": "metawavebodyar",
   "version": "1.0.0",
   "description": "MetaWave Body AR",
-  "main": "index.js",
   "scripts": {
-    "clean-dist": "rm -rf dist && mkdir dist",
-    "copy-assets": "cp -r ./assets dist",
+    "clean-dist": "rm -rf dist && mkdir dist && cd dist && mkdir assets",
+    "copy-assets": "cp -r ./assets/* ./dist/assets",
     "init": "npm run clean-dist && npm run copy-assets",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm run copy-assets && npx parcel index.html",
