@@ -20,7 +20,6 @@
     "http-server": "^14.1.1",
     "mind-ar": "^1.1.5",
     "parcel": "^2.0.0",
-    "parcel-optimizer-javascript-obfuscator-dosy": "^1.2.3",
     "three": "^0.144.0"
   }
 }
