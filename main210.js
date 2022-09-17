@@ -17,6 +17,7 @@ const loadModel = async() => {
 loadModel();
 
 document.querySelector("#switch").addEventListener("click", () => {
+  alert("switch !!!");
   mindarThree.switchCamera();
 });
 
