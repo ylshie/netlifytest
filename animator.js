@@ -175,8 +175,14 @@ const animateVRM = (vrm, results) => {
     //console.log(results.rightHandLandmarks)
     let videoElement = document.querySelector("video");
 
-    videoElement.style.width = 320;
-    videoElement.style.height = 240;
+    if (videoElement.style.width > videoElement.style.height) {
+        videoElement.style.width = 320;
+        videoElement.style.height = 240;
+    } else {
+        videoElement.style.width = 240;
+        videoElement.style.height = 320;
+    }
+    
     if (   (domAnimator.style.width != window.innerWidth)
         || (domAnimator.style.height != window.innerHeight)) 
     {
