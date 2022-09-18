@@ -15,7 +15,11 @@
     <!--<script src="./libs/CSS3DRenderer.js" type="module"></script>-->
     <script src="./libs/mindar/mindar-image-three.prod.js"></script>
     <script src="./main210.js" type="module"></script>
-    <script src="./animator.js" type="module"></script>
+    <script src="./animator.js" type="module">
+    window.animateVRM = (vrm, results) => {
+        animateVRM(currentVrm, results)
+    }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
     <script src="./camera_utils.js" crossorigin="anonymous"></script> 
     <script src="./holistic.js" crossorigin="anonymous"></script>
@@ -52,12 +56,11 @@
         // Draw landmark guides
         drawResults(results);
         // Animate model
-        //animateVRM(currentVrm, results);
-        //XXXX();
         animateVRM(results, results);
       };
       const holistic = new Holistic({
           locateFile: (file) => {
+            console.log("holistic load file " + file)
               return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5.1635989137/${file}`;
           },
       });
@@ -117,9 +120,7 @@
       html, body {position: relative; margin: 0; width: 100%; height: 100%; overflow: hidden}
       #switch {
       position: fixed;
-      bottom: 10px;
-      width: 100px;
-      height: 100px;
+      bottom: 5px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 10;

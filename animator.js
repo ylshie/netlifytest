@@ -50,12 +50,14 @@ const clock = new THREE.Clock();
 
 function animate() {
     requestAnimationFrame(animate);
-
+    /*
     if (currentVrm) {
         // Update model to render physics
+        console.log("update:" + Date.now());
         currentVrm.update(clock.getDelta());
     }
     renderer.render(scene, orbitCamera);
+    */
 }
 animate();
 
@@ -75,6 +77,7 @@ loader.load(
         THREE.VRM.from(gltf).then((vrm) => {
             scene.add(vrm.scene);
             currentVrm = vrm;
+            //arthur//
             currentVrm.scene.rotation.y = Math.PI; // Rotate model 180deg to face camera
         });
     },
@@ -94,6 +97,8 @@ const rigRotation = (name, rotation = { x: 0, y: 0, z: 0 }, dampener = 1, lerpAm
         return;
     }
 
+    //dampener = 1;
+    //lerpAmount = 1;
     let euler = new THREE.Euler(
         rotation.x * dampener,
         rotation.y * dampener,
@@ -122,7 +127,9 @@ const rigFace = (riggedFace) => {
     if (!currentVrm) {
         return;
     }
+    //arthur// 
     rigRotation("Neck", riggedFace.head, 0.7);
+    //rigRotation("Neck", riggedFace.head);
 
     // Blendshapes and Preset Name Schema
     const Blendshape = currentVrm.blendShapeProxy;
@@ -154,18 +161,27 @@ const rigFace = (riggedFace) => {
     currentVrm.lookAt.applyer.lookAt(lookTarget);
 };
 
+var old_faceLandmarks = null;
+var old_pose3DLandmarks = null;
+var old_pose2DLandmarks = null;
+var old_leftHandLandmarks = null;
+var old_rightHandLandmarks = null;
+
 /* VRM Character Animator */
 const animateVRM = (vrm, results) => {
     if (!vrm) {
         return;
     }
+    //console.log(results.rightHandLandmarks)
     let videoElement = document.querySelector("video");
 
+    videoElement.style.width = 320;
+    videoElement.style.height = 240;
     if (   (domAnimator.style.width != window.innerWidth)
         || (domAnimator.style.height != window.innerHeight)) 
     {
         renderer.setSize(window.innerWidth, window.innerHeight);
-        console.log("window size= " + window.innerWidth + "x" + window.innerHeight)
+        //console.log("window size= " + window.innerWidth + "x" + window.innerHeight)
     }
     //domAnimator.style.width = videoElement.style.width;
     //domAnimator.style.height = videoElement.style.height;
@@ -184,16 +200,26 @@ const animateVRM = (vrm, results) => {
 
     // Animate Face
     if (faceLandmarks) {
-        riggedFace = Kalidokit.Face.solve(faceLandmarks, {
+        old_faceLandmarks = faceLandmarks;
+    }
+
+    if (old_faceLandmarks) {
+        riggedFace = Kalidokit.Face.solve(old_faceLandmarks, {
             runtime: "mediapipe",
             video: videoElement,
         });
         rigFace(riggedFace);
     }
 
+    if (pose2DLandmarks) {
+        old_pose2DLandmarks = pose2DLandmarks;
+    }
+    if (pose3DLandmarks) {
+        old_pose3DLandmarks = pose3DLandmarks;
+    }
     // Animate Pose
-    if (pose2DLandmarks && pose3DLandmarks) {
-        riggedPose = Kalidokit.Pose.solve(pose3DLandmarks, pose2DLandmarks, {
+    if (old_pose2DLandmarks && old_pose3DLandmarks) {
+        riggedPose = Kalidokit.Pose.solve(old_pose3DLandmarks, old_pose2DLandmarks, {
             runtime: "mediapipe",
             video: videoElement,
         });
@@ -225,7 +251,10 @@ const animateVRM = (vrm, results) => {
 
     // Animate Hands
     if (leftHandLandmarks) {
-        riggedLeftHand = Kalidokit.Hand.solve(leftHandLandmarks, "Left");
+        old_leftHandLandmarks = leftHandLandmarks;
+    }
+    if (old_leftHandLandmarks) {
+        riggedLeftHand = Kalidokit.Hand.solve(old_leftHandLandmarks, "Left");
         rigRotation("LeftHand", {
             // Combine pose rotation Z and hand rotation X Y
             z: riggedPose.LeftHand.z,
@@ -249,7 +278,12 @@ const animateVRM = (vrm, results) => {
         rigRotation("LeftLittleDistal", riggedLeftHand.LeftLittleDistal);
     }
     if (rightHandLandmarks) {
-        riggedRightHand = Kalidokit.Hand.solve(rightHandLandmarks, "Right");
+        old_rightHandLandmarks = rightHandLandmarks;
+    }
+    if (old_rightHandLandmarks) {
+        console.log("pos right hannd")
+        console.log(rightHandLandmarks)
+        riggedRightHand = Kalidokit.Hand.solve(old_rightHandLandmarks, "Right");
         rigRotation("RightHand", {
             // Combine Z axis from pose hand and X/Y axis from hand wrist rotation
             z: riggedPose.RightHand.z,
@@ -272,26 +306,19 @@ const animateVRM = (vrm, results) => {
         rigRotation("RightLittleIntermediate", riggedRightHand.RightLittleIntermediate);
         rigRotation("RightLittleDistal", riggedRightHand.RightLittleDistal);
     }
+///*
+    if (currentVrm) {
+        // Update model to render physics
+        //console.log("update:" + Date.now());
+        currentVrm.update(clock.getDelta());
+    }
+    renderer.render(scene, orbitCamera);
+//*/
 };
 
-/* SETUP MEDIAPIPE HOLISTIC INSTANCE */
-let videoElement = document.querySelector(".input_video"),
-    guideCanvas = document.querySelector("canvas.guides");
-
-// Use `Mediapipe` utils to get camera - lower resolution = higher fps
-/*
-const camera = new Camera(videoElement, {
-    onFrame: async () => {
-        await holistic.send({ image: videoElement });
-    },
-    width: 640,
-    height: 480,
-});
-camera.start();
-*/
 
 window.animateVRM = (vrm, results) => {
-    console.log("xxxx")
+    //console.log("xxxx")
     animateVRM(currentVrm, results)
 }
 

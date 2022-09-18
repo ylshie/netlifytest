@@ -17,7 +17,6 @@ const loadModel = async() => {
 loadModel();
 
 document.querySelector("#switch").addEventListener("click", () => {
-  alert("switch !!!");
   mindarThree.switchCamera();
 });
 
@@ -29,6 +28,8 @@ function startMindAR() {
     filterBeta: 10000,
     missTolerance: 0,
     warmupTolerance: 0,
+    uiScanning: "no",
+    uiLoading: "no",
   });
   const {renderer, scene, camera} = mindarThree;
 
