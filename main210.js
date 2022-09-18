@@ -16,21 +16,23 @@ const loadModel = async() => {
 
 loadModel();
 
+const mindarThree = new window.MINDAR.IMAGE.MindARThree({
+  container: document.body,
+  imageTargetSrc: './assets/targets/logo2.mind',
+  filterMinCF: 1,
+  filterBeta: 10000,
+  missTolerance: 0,
+  warmupTolerance: 0,
+  uiScanning: "no",
+  uiLoading: "no",
+});
+
 document.querySelector("#switch").addEventListener("click", () => {
   mindarThree.switchCamera();
 });
 
 function startMindAR() {
-  const mindarThree = new window.MINDAR.IMAGE.MindARThree({
-    container: document.body,
-    imageTargetSrc: './assets/targets/logo2.mind',
-    filterMinCF: 1,
-    filterBeta: 10000,
-    missTolerance: 0,
-    warmupTolerance: 0,
-    uiScanning: "no",
-    uiLoading: "no",
-  });
+  
   const {renderer, scene, camera} = mindarThree;
 
   const anchor = mindarThree.addAnchor(0);
