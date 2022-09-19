@@ -179,10 +179,13 @@ const animateVRM = (vrm, results) => {
         videoElement.style.width = 320;
         videoElement.style.height = 240;
     } else {
-        videoElement.style.width = 240;
-        videoElement.style.height = 320;
+        videoElement.style.width = 120;
+        videoElement.style.height = 160;
     }
-    
+    videoElement.style.position = 'fixed';
+    videoElement.style.right = '10px';
+    videoElement.style.bottom = '10px';
+
     if (   (domAnimator.style.width != window.innerWidth)
         || (domAnimator.style.height != window.innerHeight)) 
     {

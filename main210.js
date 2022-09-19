@@ -27,10 +27,6 @@ const mindarThree = new window.MINDAR.IMAGE.MindARThree({
   uiLoading: "no",
 });
 
-document.querySelector("#switch").addEventListener("click", () => {
-  mindarThree.switchCamera();
-});
-
 function startMindAR() {
   
   const {renderer, scene, camera} = mindarThree;
